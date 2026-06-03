@@ -1,0 +1,13 @@
+## .gitignore для C# / .NET проекта
+
+# Артефакты сборки
+bin/
+obj/
+
+# macOS
+.DS_Store
+
+# Rider / JetBrains
+.idea/
+*.user
+
