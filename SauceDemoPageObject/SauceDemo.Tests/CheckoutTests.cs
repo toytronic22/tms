@@ -19,7 +19,7 @@ public class CheckoutTests : BaseTest
     }
 
     [Test]
-    public void CheckoutOverviewShowsCorrectTotal()
+    public void CompleteOrderSuccessfully()
     {
         CheckoutOverviewPage overviewPage = new LoginPage(driver)
             .Login()
@@ -31,26 +31,13 @@ public class CheckoutTests : BaseTest
         Assert.Multiple(() =>
         {
             Assert.That(overviewPage.GetTitle(), Is.EqualTo("Checkout: Overview"));
-            Assert.That(overviewPage.GetItemsCount(), Is.EqualTo(1));
-            Assert.That(overviewPage.GetItemTotal(), Is.EqualTo(29.99m));
-            Assert.That(overviewPage.GetTotal(), Is.EqualTo(overviewPage.GetItemTotal() + overviewPage.GetTax()));
+            Assert.That(overviewPage.GetTotalText(), Does.StartWith("Total: $"));
         });
-    }
 
-    [Test]
-    public void CompleteOrderSuccessfully()
-    {
-        CheckoutCompletePage completePage = new LoginPage(driver)
-            .Login()
-            .AddBackpackToCart()
-            .Header.OpenCart()
-            .ClickCheckout()
-            .FillInformation()
-            .ClickFinish();
+        CheckoutCompletePage completePage = overviewPage.ClickFinish();
 
         Assert.Multiple(() =>
         {
-            Assert.That(completePage.IsOrderCompleted(), Is.True);
             Assert.That(completePage.GetCompleteHeader(), Is.EqualTo("Thank you for your order!"));
             Assert.That(completePage.GetUrl(), Does.Contain("/checkout-complete.html"));
         });

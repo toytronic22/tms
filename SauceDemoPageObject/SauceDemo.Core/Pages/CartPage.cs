@@ -8,7 +8,6 @@ public class CartPage : BasePage
     private readonly By _cartItems = By.CssSelector("div[data-test='inventory-item']");
     private readonly By _lblItemName = By.CssSelector("div[data-test='inventory-item-name']");
     private readonly By _lblQuantity = By.CssSelector("div[data-test='item-quantity']");
-    private readonly By _btnContinueShopping = By.Id("continue-shopping");
     private readonly By _btnCheckout = By.Id("checkout");
     private readonly By _btnRemoveBackpack = By.Id("remove-sauce-labs-backpack");
 
@@ -32,19 +31,11 @@ public class CartPage : BasePage
         return this;
     }
 
-    public ProductsPage ClickContinueShopping()
-    {
-        _driver.FindElement(_btnContinueShopping).Click();
-        return new ProductsPage(_driver);
-    }
-
     public CheckoutInformationPage ClickCheckout()
     {
         _driver.FindElement(_btnCheckout).Click();
         return new CheckoutInformationPage(_driver);
     }
-
-    public bool IsCartPageDisplayed() => IsDisplayed(_btnCheckout) && IsDisplayed(_lblTitle);
 
     public bool IsEmpty() => GetItemsCount() == 0;
 }

@@ -34,8 +34,6 @@ public class HeaderSection : BasePage
         return new CartPage(_driver);
     }
 
-    public bool IsCartIconDisplayed() => IsDisplayed(_lnkCart);
-
     public int GetCartCounter()
     {
         var badge = _driver.FindElements(_lblCartBadge);

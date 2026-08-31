@@ -7,7 +7,6 @@ public class ProductsPage : BasePage
     private readonly By _lblTitle = By.CssSelector("span[data-test='title']");
     private readonly By _itemsList = By.CssSelector("div[data-test='inventory-item']");
     private readonly By _btnAddBackpack = By.Id("add-to-cart-sauce-labs-backpack");
-    private readonly By _btnRemoveBackpack = By.Id("remove-sauce-labs-backpack");
 
     public HeaderSection Header => new(_driver);
 
@@ -24,14 +23,6 @@ public class ProductsPage : BasePage
         _driver.FindElement(_btnAddBackpack).Click();
         return this;
     }
-
-    public ProductsPage RemoveBackpackFromCart()
-    {
-        _driver.FindElement(_btnRemoveBackpack).Click();
-        return this;
-    }
-
-    public bool IsRemoveButtonDisplayed() => IsDisplayed(_btnRemoveBackpack);
 
     public bool IsProductsPageDisplayed() => IsDisplayed(_lblTitle) && GetProductsCount() > 0;
 }

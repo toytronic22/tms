@@ -20,8 +20,6 @@ public class BasePage
 
     public string GetUrl() => _driver.Url;
 
-    public string GetPageTitle() => _driver.Title;
-
     protected WebDriverWait Wait(int seconds = 10) =>
         new WebDriverWait(_driver, TimeSpan.FromSeconds(seconds));
 

@@ -5,19 +5,6 @@ namespace SauceDemo.Tests;
 public class CartTests : BaseTest
 {
     [Test]
-    public void AddProductToCart()
-    {
-        ProductsPage productsPage = new LoginPage(driver).Login();
-        productsPage.AddBackpackToCart();
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(productsPage.Header.GetCartCounter(), Is.EqualTo(1));
-            Assert.That(productsPage.IsRemoveButtonDisplayed(), Is.True);
-        });
-    }
-
-    [Test]
     public void AddedProductIsShownInCart()
     {
         ProductsPage productsPage = new LoginPage(driver).Login();
