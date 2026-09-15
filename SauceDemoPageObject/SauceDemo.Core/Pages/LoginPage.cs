@@ -33,8 +33,11 @@ public class LoginPage : BasePage
         return new ProductsPage(_driver);
     }
 
-    public ProductsPage Login(string username = "standard_user", string password = "secret_sauce") =>
-        SetUserName(username).SetPassword(password).ClickLoginButton();
+    public ProductsPage Login(string username = "standard_user", string password = "secret_sauce")
+    {
+        Log.Info($"Login as {username}");
+        return SetUserName(username).SetPassword(password).ClickLoginButton();
+    }
 
     public string GetErrorMessage() => _driver.FindElement(_msgError).Text;
 

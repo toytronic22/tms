@@ -1,7 +1,9 @@
+using Allure.NUnit;
 using SauceDemo.Core.Pages;
 
 namespace SauceDemo.Tests;
 
+[AllureNUnit]
 public class CheckoutTests : BaseTest
 {
     [Test]

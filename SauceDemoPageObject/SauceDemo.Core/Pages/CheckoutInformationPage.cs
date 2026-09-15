@@ -44,8 +44,11 @@ public class CheckoutInformationPage : BasePage
         return this;
     }
 
-    public CheckoutOverviewPage FillInformation(string firstName = "Alexey", string lastName = "Martynov", string postalCode = "220000") =>
-        SetFirstName(firstName).SetLastName(lastName).SetPostalCode(postalCode).ClickContinue();
+    public CheckoutOverviewPage FillInformation(string firstName = "Alexey", string lastName = "Martynov", string postalCode = "220000")
+    {
+        Log.Info($"Fill checkout information: {firstName} {lastName}, {postalCode}");
+        return SetFirstName(firstName).SetLastName(lastName).SetPostalCode(postalCode).ClickContinue();
+    }
 
     public string GetErrorMessage()
     {
