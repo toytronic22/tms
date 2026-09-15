@@ -1,3 +1,4 @@
+using log4net;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
@@ -5,6 +6,8 @@ namespace SauceDemo.Core.Pages;
 
 public class BasePage
 {
+    protected static readonly ILog Log = LogManager.GetLogger(typeof(BasePage));
+
     protected IWebDriver _driver;
 
     public BasePage(IWebDriver driver)
@@ -14,6 +17,7 @@ public class BasePage
 
     public void OpenSauceDemo()
     {
+        Log.Info("Open SauceDemo");
         _driver.Navigate().GoToUrl("https://www.saucedemo.com");
         _driver.Manage().Window.Maximize();
     }
