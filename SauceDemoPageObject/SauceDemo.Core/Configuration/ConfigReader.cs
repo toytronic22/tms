@@ -11,6 +11,7 @@ public static class ConfigReader
         IConfiguration configuration = new ConfigurationBuilder()
             .SetBasePath(AppContext.BaseDirectory)
             .AddJsonFile("appsettings.json")
+            .AddEnvironmentVariables()
             .Build();
 
         return configuration.GetSection("TestSettings").Get<TestSettings>()!;
