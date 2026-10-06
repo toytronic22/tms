@@ -1,26 +1,30 @@
 using OpenQA.Selenium;
 using SauceDemo.Core.Elements;
+using SeleniumExtras.PageObjects;
 
 namespace SauceDemo.Core.Pages;
 
-public class HeaderSection : BasePage
+public class HeaderSection : BasePage<HeaderSection>
 {
-    private readonly By _btnBurgerMenu = By.Id("react-burger-menu-btn");
-    private readonly By _lnkCart = By.CssSelector("a[data-test='shopping-cart-link']");
-    private readonly By _lblCartBadge = By.CssSelector("span[data-test='shopping-cart-badge']");
+    [FindsBy(How = How.CssSelector, Using = "a[data-test='shopping-cart-link']")]
+    private IWebElement _lnkCart = null!;
 
-    private Button BurgerMenuButton => new(_driver.FindElement(_btnBurgerMenu));
-    private Link CartLink => new(_driver.FindElement(_lnkCart));
+    [FindsBy(How = How.CssSelector, Using = "span[data-test='shopping-cart-badge']")]
+    private IList<IWebElement> _lblCartBadge = null!;
+
+    private Link CartLink => new(_lnkCart);
 
     public HeaderSection(IWebDriver driver) : base(driver)
     {
     }
 
-    public SideMenuSection OpenSideMenu()
+    protected override void ExecuteLoad()
     {
-        BurgerMenuButton.Click();
-        return new SideMenuSection(_driver).WaitUntilOpened();
     }
+
+    protected override bool EvaluateLoadedStatus() => CartLink.IsDisplayed();
+
+    public SideMenuSection OpenSideMenu() => new SideMenuSection(_driver).Load();
 
     public LoginPage Logout()
     {
@@ -32,12 +36,9 @@ public class HeaderSection : BasePage
     {
         Log.Info("Open cart");
         CartLink.Click();
-        return new CartPage(_driver).WaitUntilOpened();
+        return new CartPage(_driver).Load();
     }
 
-    public int GetCartCounter()
-    {
-        var badge = _driver.FindElements(_lblCartBadge);
-        return badge.Count == 0 ? 0 : int.Parse(new Label(badge[0]).GetText());
-    }
+    public int GetCartCounter() =>
+        _lblCartBadge.Count == 0 ? 0 : int.Parse(new Label(_lblCartBadge[0]).GetText());
 }

@@ -1,19 +1,27 @@
 using OpenQA.Selenium;
 using SauceDemo.Core.Elements;
+using SeleniumExtras.PageObjects;
 
 namespace SauceDemo.Core.Pages;
 
-public class ProductDetailsPage : BasePage
+public class ProductDetailsPage : BasePage<ProductDetailsPage>
 {
-    private readonly By _lblName = By.CssSelector("div[data-test='inventory-item-name']");
-    private readonly By _lblPrice = By.CssSelector("div[data-test='inventory-item-price']");
-    private readonly By _btnAddToCart = By.Id("add-to-cart");
-    private readonly By _btnBackToProducts = By.Id("back-to-products");
+    [FindsBy(How = How.CssSelector, Using = "div[data-test='inventory-item-name']")]
+    private IWebElement _lblName = null!;
 
-    private Label NameLabel => new(_driver.FindElement(_lblName));
-    private Label PriceLabel => new(_driver.FindElement(_lblPrice));
-    private Button AddToCartButton => new(_driver.FindElement(_btnAddToCart));
-    private Button BackToProductsButton => new(_driver.FindElement(_btnBackToProducts));
+    [FindsBy(How = How.CssSelector, Using = "div[data-test='inventory-item-price']")]
+    private IWebElement _lblPrice = null!;
+
+    [FindsBy(How = How.Id, Using = "add-to-cart")]
+    private IWebElement _btnAddToCart = null!;
+
+    [FindsBy(How = How.Id, Using = "back-to-products")]
+    private IWebElement _btnBackToProducts = null!;
+
+    private Label NameLabel => new(_lblName);
+    private Label PriceLabel => new(_lblPrice);
+    private Button AddToCartButton => new(_btnAddToCart);
+    private Button BackToProductsButton => new(_btnBackToProducts);
 
     public HeaderSection Header => new(_driver);
 
@@ -21,11 +29,12 @@ public class ProductDetailsPage : BasePage
     {
     }
 
-    public ProductDetailsPage WaitUntilOpened()
+    protected override void ExecuteLoad()
     {
-        Wait().Until(_ => BackToProductsButton.IsDisplayed());
-        return this;
     }
+
+    protected override bool EvaluateLoadedStatus() =>
+        _driver.Url.Contains("/inventory-item.html") && BackToProductsButton.IsDisplayed();
 
     public string GetName() => NameLabel.GetText();
 
@@ -41,6 +50,6 @@ public class ProductDetailsPage : BasePage
     public ProductsPage ClickBackToProducts()
     {
         BackToProductsButton.Click();
-        return new ProductsPage(_driver);
+        return new ProductsPage(_driver).Load();
     }
 }

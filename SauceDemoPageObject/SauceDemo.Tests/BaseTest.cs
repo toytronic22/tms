@@ -2,7 +2,8 @@ using Allure.Net.Commons;
 using log4net;
 using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
+using SauceDemo.Core.Configuration;
+using SauceDemo.Core.Drivers;
 using SauceDemo.Core.Pages;
 
 namespace SauceDemo.Tests;
@@ -18,13 +19,8 @@ public class BaseTest
     {
         Log.Info($"Test started: {TestContext.CurrentContext.Test.Name}");
 
-        ChromeOptions options = new ChromeOptions();
-        options.AddArgument("--guest");
-        options.AddArgument("--start-maximized");
-
-        driver = new ChromeDriver(options);
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-        new BasePage(driver).OpenSauceDemo();
+        driver = DriverFactory.CreateDriver(ConfigReader.Settings);
+        new LoginPage(driver).Load();
     }
 
     [TearDown]

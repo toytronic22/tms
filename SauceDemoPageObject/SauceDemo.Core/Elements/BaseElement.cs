@@ -13,5 +13,15 @@ public class BaseElement
 
     public string GetText() => _element.Text;
 
-    public bool IsDisplayed() => _element.Displayed;
+    public bool IsDisplayed()
+    {
+        try
+        {
+            return _element.Displayed;
+        }
+        catch (NoSuchElementException)
+        {
+            return false;
+        }
+    }
 }

@@ -9,8 +9,7 @@ public class LoginTests : BaseTest
     [Test]
     public void LoginWithValidUser()
     {
-        LoginPage loginPage = new LoginPage(driver);
-        ProductsPage productsPage = loginPage.Login();
+        ProductsPage productsPage = new LoginPage(driver).Login();
 
         Assert.Multiple(() =>
         {
@@ -23,20 +22,22 @@ public class LoginTests : BaseTest
     [Test]
     public void LoginWithLockedUser()
     {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.Login(username: "locked_out_user");
+        string errorMessage = new LoginPage(driver)
+            .SetUserName("locked_out_user")
+            .SetPassword("secret_sauce")
+            .ClickLoginButtonExpectingError()
+            .GetErrorMessage();
 
-        Assert.That(loginPage.GetErrorMessage(),
-            Is.EqualTo("Epic sadface: Sorry, this user has been locked out."));
+        Assert.That(errorMessage, Is.EqualTo("Epic sadface: Sorry, this user has been locked out."));
     }
 
     [Test]
     public void LogoutReturnsToLoginPage()
     {
-        LoginPage loginPage = new LoginPage(driver);
-        ProductsPage productsPage = loginPage.Login();
-        LoginPage loginPageAfterLogout = productsPage.Header.Logout();
+        LoginPage loginPage = new LoginPage(driver)
+            .Login()
+            .Header.Logout();
 
-        Assert.That(loginPageAfterLogout.IsLoginPageDisplayed(), Is.True);
+        Assert.That(loginPage.IsLoginPageDisplayed(), Is.True);
     }
 }

@@ -1,29 +1,38 @@
 using OpenQA.Selenium;
 using SauceDemo.Core.Elements;
+using SeleniumExtras.PageObjects;
 
 namespace SauceDemo.Core.Pages;
 
-public class CheckoutOverviewPage : BasePage
+public class CheckoutOverviewPage : BasePage<CheckoutOverviewPage>
 {
-    private readonly By _lblTitle = By.CssSelector("span[data-test='title']");
-    private readonly By _lblItemName = By.CssSelector("div[data-test='inventory-item-name']");
-    private readonly By _lblTotal = By.CssSelector("div[data-test='total-label']");
-    private readonly By _btnFinish = By.Id("finish");
+    [FindsBy(How = How.CssSelector, Using = "span[data-test='title']")]
+    private IWebElement _lblTitle = null!;
 
-    private Label TitleLabel => new(_driver.FindElement(_lblTitle));
-    private Label ItemNameLabel => new(_driver.FindElement(_lblItemName));
-    private Label TotalLabel => new(_driver.FindElement(_lblTotal));
-    private Button FinishButton => new(_driver.FindElement(_btnFinish));
+    [FindsBy(How = How.CssSelector, Using = "div[data-test='inventory-item-name']")]
+    private IWebElement _lblItemName = null!;
+
+    [FindsBy(How = How.CssSelector, Using = "div[data-test='total-label']")]
+    private IWebElement _lblTotal = null!;
+
+    [FindsBy(How = How.Id, Using = "finish")]
+    private IWebElement _btnFinish = null!;
+
+    private Label TitleLabel => new(_lblTitle);
+    private Label ItemNameLabel => new(_lblItemName);
+    private Label TotalLabel => new(_lblTotal);
+    private Button FinishButton => new(_btnFinish);
 
     public CheckoutOverviewPage(IWebDriver driver) : base(driver)
     {
     }
 
-    public CheckoutOverviewPage WaitUntilOpened()
+    protected override void ExecuteLoad()
     {
-        Wait().Until(_ => FinishButton.IsDisplayed());
-        return this;
     }
+
+    protected override bool EvaluateLoadedStatus() =>
+        _driver.Url.Contains("/checkout-step-two.html") && FinishButton.IsDisplayed();
 
     public string GetTitle() => TitleLabel.GetText();
 
@@ -35,6 +44,6 @@ public class CheckoutOverviewPage : BasePage
     {
         Log.Info("Finish order");
         FinishButton.Click();
-        return new CheckoutCompletePage(_driver);
+        return new CheckoutCompletePage(_driver).Load();
     }
 }
