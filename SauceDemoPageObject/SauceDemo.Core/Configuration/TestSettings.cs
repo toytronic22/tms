@@ -6,4 +6,5 @@ public class TestSettings
     public bool Headless { get; set; }
     public string BaseUrl { get; set; } = string.Empty;
     public int ImplicitWaitSeconds { get; set; }
+    public string GridUrl { get; set; } = string.Empty;
 }

@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    environment {
+        TestSettings__GridUrl = 'http://selenium:4444'
+        TestSettings__Headless = 'true'
+        ALLURE_RESULTS = 'SauceDemoPageObject/SauceDemo.Tests/bin/Debug/net10.0/allure-results'
+    }
+
+    stages {
+        stage('Restore') {
+            steps {
+                dir('SauceDemoPageObject') {
+                    sh 'dotnet restore'
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('SauceDemoPageObject') {
+                    sh 'dotnet build --no-restore'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh "rm -rf ${ALLURE_RESULTS}"
+                dir('SauceDemoPageObject') {
+                    sh 'dotnet test --no-build'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            allure commandline: 'allure Jenkins', results: [[path: "${ALLURE_RESULTS}"]]
+        }
+    }
+}

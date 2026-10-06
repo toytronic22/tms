@@ -30,14 +30,18 @@ SauceDemoPageObject/
 │       ├── CheckoutInformationPage.cs   оформление, шаг 1 (данные покупателя)
 │       ├── CheckoutOverviewPage.cs      оформление, шаг 2 (суммы)
 │       └── CheckoutCompletePage.cs      успешное оформление
-└── SauceDemo.Tests/         тесты NUnit
-    ├── appsettings.json          настройки запуска
-    ├── BaseTest.cs
-    ├── LoginTests.cs
-    ├── CartTests.cs
-    ├── CheckoutTests.cs
-    ├── ProductDetailsTests.cs
-    └── PurchaseTests.cs          полный флоу покупки товара
+├── SauceDemo.Tests/         тесты NUnit
+│   ├── appsettings.json          настройки запуска
+│   ├── BaseTest.cs
+│   ├── LoginTests.cs
+│   ├── CartTests.cs
+│   ├── CheckoutTests.cs
+│   ├── ProductDetailsTests.cs
+│   └── PurchaseTests.cs          полный флоу покупки товара
+├── jenkins/
+│   ├── Dockerfile               Jenkins с .NET SDK и плагинами
+│   └── docker-compose.yml       Jenkins и Selenium Grid
+└── Jenkinsfile                  пайплайн: restore, build, test, Allure
 ```
 
 Тестовые данные: `standard_user` / `secret_sauce` (указаны на главной странице приложения).
@@ -54,6 +58,19 @@ dotnet test
 - `Headless` — запуск без окна браузера
 - `BaseUrl` — адрес приложения
 - `ImplicitWaitSeconds` — неявное ожидание в секундах
+- `GridUrl` — адрес Selenium Grid, если пустой — браузер запускается локально
+
+Любую настройку можно переопределить переменной окружения, например `TestSettings__GridUrl=http://localhost:4444`.
+
+## Jenkins
+
+```
+cd jenkins
+docker compose up -d
+```
+
+Jenkins открывается на http://localhost:8081, Selenium Grid — на http://localhost:4444.
+В Jenkins нужен инструмент Allure Commandline с именем `allure Jenkins`.
 
 ## Чек-лист
 
