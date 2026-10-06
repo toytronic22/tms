@@ -1,4 +1,5 @@
 using OpenQA.Selenium;
+using SauceDemo.Core.Elements;
 
 namespace SauceDemo.Core.Pages;
 
@@ -10,37 +11,43 @@ public class CheckoutInformationPage : BasePage
     private readonly By _btnContinue = By.Id("continue");
     private readonly By _msgError = By.CssSelector("h3[data-test='error']");
 
+    private Input FirstNameInput => new(_driver.FindElement(_inpFirstName));
+    private Input LastNameInput => new(_driver.FindElement(_inpLastName));
+    private Input PostalCodeInput => new(_driver.FindElement(_inpPostalCode));
+    private Button ContinueButton => new(_driver.FindElement(_btnContinue));
+    private Label ErrorMessage => new(_driver.FindElement(_msgError));
+
     public CheckoutInformationPage(IWebDriver driver) : base(driver)
     {
     }
 
     public CheckoutInformationPage SetFirstName(string firstName)
     {
-        _driver.FindElement(_inpFirstName).SendKeys(firstName);
+        FirstNameInput.SetText(firstName);
         return this;
     }
 
     public CheckoutInformationPage SetLastName(string lastName)
     {
-        _driver.FindElement(_inpLastName).SendKeys(lastName);
+        LastNameInput.SetText(lastName);
         return this;
     }
 
     public CheckoutInformationPage SetPostalCode(string postalCode)
     {
-        _driver.FindElement(_inpPostalCode).SendKeys(postalCode);
+        PostalCodeInput.SetText(postalCode);
         return this;
     }
 
     public CheckoutOverviewPage ClickContinue()
     {
-        _driver.FindElement(_btnContinue).Click();
-        return new CheckoutOverviewPage(_driver);
+        ContinueButton.Click();
+        return new CheckoutOverviewPage(_driver).WaitUntilOpened();
     }
 
     public CheckoutInformationPage ClickContinueExpectingError()
     {
-        _driver.FindElement(_btnContinue).Click();
+        ContinueButton.Click();
         return this;
     }
 
@@ -52,7 +59,7 @@ public class CheckoutInformationPage : BasePage
 
     public string GetErrorMessage()
     {
-        Wait().Until(d => d.FindElement(_msgError).Displayed);
-        return _driver.FindElement(_msgError).Text;
+        Wait().Until(_ => ErrorMessage.IsDisplayed());
+        return ErrorMessage.GetText();
     }
 }

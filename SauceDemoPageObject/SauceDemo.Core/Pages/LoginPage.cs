@@ -1,4 +1,5 @@
 using OpenQA.Selenium;
+using SauceDemo.Core.Elements;
 
 namespace SauceDemo.Core.Pages;
 
@@ -9,27 +10,30 @@ public class LoginPage : BasePage
     private readonly By _btnLogin = By.Id("login-button");
     private readonly By _msgError = By.CssSelector("h3[data-test='error']");
 
+    private Input UsernameInput => new(_driver.FindElement(_inpUsername));
+    private Input PasswordInput => new(_driver.FindElement(_inpPassword));
+    private Button LoginButton => new(_driver.FindElement(_btnLogin));
+    private Label ErrorMessage => new(_driver.FindElement(_msgError));
+
     public LoginPage(IWebDriver driver) : base(driver)
     {
     }
 
     public LoginPage SetUserName(string username)
     {
-        _driver.FindElement(_inpUsername).Clear();
-        _driver.FindElement(_inpUsername).SendKeys(username);
+        UsernameInput.SetText(username);
         return this;
     }
 
     public LoginPage SetPassword(string password)
     {
-        _driver.FindElement(_inpPassword).Clear();
-        _driver.FindElement(_inpPassword).SendKeys(password);
+        PasswordInput.SetText(password);
         return this;
     }
 
     public ProductsPage ClickLoginButton()
     {
-        _driver.FindElement(_btnLogin).Click();
+        LoginButton.Click();
         return new ProductsPage(_driver);
     }
 
@@ -39,7 +43,7 @@ public class LoginPage : BasePage
         return SetUserName(username).SetPassword(password).ClickLoginButton();
     }
 
-    public string GetErrorMessage() => _driver.FindElement(_msgError).Text;
+    public string GetErrorMessage() => ErrorMessage.GetText();
 
     public bool IsLoginPageDisplayed() =>
         IsDisplayed(_btnLogin) && IsDisplayed(_inpUsername) && IsDisplayed(_inpPassword);

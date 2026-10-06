@@ -34,4 +34,13 @@ public class CartTests : BaseTest
             Assert.That(cartPage.Header.GetCartCounter(), Is.EqualTo(0));
         });
     }
+
+    [Test]
+    public void ResetAppStateClearsCart()
+    {
+        ProductsPage productsPage = new LoginPage(driver).Login().AddBackpackToCart();
+        productsPage.Header.OpenSideMenu().ResetAppState();
+
+        Assert.That(productsPage.Header.GetCartCounter(), Is.EqualTo(0));
+    }
 }
