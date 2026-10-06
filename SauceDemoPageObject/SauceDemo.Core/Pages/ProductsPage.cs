@@ -1,18 +1,26 @@
 using OpenQA.Selenium;
 using SauceDemo.Core.Elements;
+using SeleniumExtras.PageObjects;
 
 namespace SauceDemo.Core.Pages;
 
-public class ProductsPage : BasePage
+public class ProductsPage : BasePage<ProductsPage>
 {
-    private readonly By _lblTitle = By.CssSelector("span[data-test='title']");
-    private readonly By _itemsList = By.CssSelector("div[data-test='inventory-item']");
-    private readonly By _btnAddBackpack = By.Id("add-to-cart-sauce-labs-backpack");
-    private readonly By _lnkBackpackName = By.CssSelector("a[data-test='item-4-title-link']");
+    [FindsBy(How = How.CssSelector, Using = "span[data-test='title']")]
+    private IWebElement _lblTitle = null!;
 
-    private Label TitleLabel => new(_driver.FindElement(_lblTitle));
-    private Button AddBackpackButton => new(_driver.FindElement(_btnAddBackpack));
-    private Link BackpackNameLink => new(_driver.FindElement(_lnkBackpackName));
+    [FindsBy(How = How.CssSelector, Using = "div[data-test='inventory-item']")]
+    private IList<IWebElement> _itemsList = null!;
+
+    [FindsBy(How = How.Id, Using = "add-to-cart-sauce-labs-backpack")]
+    private IWebElement _btnAddBackpack = null!;
+
+    [FindsBy(How = How.CssSelector, Using = "a[data-test='item-4-title-link']")]
+    private IWebElement _lnkBackpackName = null!;
+
+    private Label TitleLabel => new(_lblTitle);
+    private Button AddBackpackButton => new(_btnAddBackpack);
+    private Link BackpackNameLink => new(_lnkBackpackName);
 
     public HeaderSection Header => new(_driver);
 
@@ -20,9 +28,14 @@ public class ProductsPage : BasePage
     {
     }
 
+    protected override void ExecuteLoad() => _driver.Navigate().GoToUrl($"{BaseUrl}/inventory.html");
+
+    protected override bool EvaluateLoadedStatus() =>
+        _driver.Url.Contains("/inventory.html") && TitleLabel.IsDisplayed();
+
     public string GetTitle() => TitleLabel.GetText();
 
-    public int GetProductsCount() => _driver.FindElements(_itemsList).Count;
+    public int GetProductsCount() => _itemsList.Count;
 
     public ProductsPage AddBackpackToCart()
     {
@@ -35,8 +48,8 @@ public class ProductsPage : BasePage
     {
         Log.Info("Open backpack details");
         BackpackNameLink.Click();
-        return new ProductDetailsPage(_driver).WaitUntilOpened();
+        return new ProductDetailsPage(_driver).Load();
     }
 
-    public bool IsProductsPageDisplayed() => IsDisplayed(_lblTitle) && GetProductsCount() > 0;
+    public bool IsProductsPageDisplayed() => TitleLabel.IsDisplayed() && GetProductsCount() > 0;
 }

@@ -9,8 +9,10 @@ public class CartTests : BaseTest
     [Test]
     public void AddedProductIsShownInCart()
     {
-        ProductsPage productsPage = new LoginPage(driver).Login();
-        CartPage cartPage = productsPage.AddBackpackToCart().Header.OpenCart();
+        CartPage cartPage = new LoginPage(driver)
+            .Login()
+            .AddBackpackToCart()
+            .Header.OpenCart();
 
         Assert.Multiple(() =>
         {
@@ -24,9 +26,11 @@ public class CartTests : BaseTest
     [Test]
     public void RemoveProductFromCart()
     {
-        ProductsPage productsPage = new LoginPage(driver).Login();
-        CartPage cartPage = productsPage.AddBackpackToCart().Header.OpenCart();
-        cartPage.RemoveBackpack();
+        CartPage cartPage = new LoginPage(driver)
+            .Login()
+            .AddBackpackToCart()
+            .Header.OpenCart()
+            .RemoveBackpack();
 
         Assert.Multiple(() =>
         {

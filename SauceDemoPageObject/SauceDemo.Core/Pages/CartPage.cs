@@ -1,22 +1,34 @@
 using OpenQA.Selenium;
 using SauceDemo.Core.Elements;
+using SeleniumExtras.PageObjects;
 
 namespace SauceDemo.Core.Pages;
 
-public class CartPage : BasePage
+public class CartPage : BasePage<CartPage>
 {
-    private readonly By _lblTitle = By.CssSelector("span[data-test='title']");
-    private readonly By _cartItems = By.CssSelector("div[data-test='inventory-item']");
-    private readonly By _lblItemName = By.CssSelector("div[data-test='inventory-item-name']");
-    private readonly By _lblQuantity = By.CssSelector("div[data-test='item-quantity']");
-    private readonly By _btnCheckout = By.Id("checkout");
-    private readonly By _btnRemoveBackpack = By.Id("remove-sauce-labs-backpack");
+    [FindsBy(How = How.CssSelector, Using = "span[data-test='title']")]
+    private IWebElement _lblTitle = null!;
 
-    private Label TitleLabel => new(_driver.FindElement(_lblTitle));
-    private Label ItemNameLabel => new(_driver.FindElement(_lblItemName));
-    private Label QuantityLabel => new(_driver.FindElement(_lblQuantity));
-    private Button CheckoutButton => new(_driver.FindElement(_btnCheckout));
-    private Button RemoveBackpackButton => new(_driver.FindElement(_btnRemoveBackpack));
+    [FindsBy(How = How.CssSelector, Using = "div[data-test='inventory-item']")]
+    private IList<IWebElement> _cartItems = null!;
+
+    [FindsBy(How = How.CssSelector, Using = "div[data-test='inventory-item-name']")]
+    private IWebElement _lblItemName = null!;
+
+    [FindsBy(How = How.CssSelector, Using = "div[data-test='item-quantity']")]
+    private IWebElement _lblQuantity = null!;
+
+    [FindsBy(How = How.Id, Using = "checkout")]
+    private IWebElement _btnCheckout = null!;
+
+    [FindsBy(How = How.Id, Using = "remove-sauce-labs-backpack")]
+    private IWebElement _btnRemoveBackpack = null!;
+
+    private Label TitleLabel => new(_lblTitle);
+    private Label ItemNameLabel => new(_lblItemName);
+    private Label QuantityLabel => new(_lblQuantity);
+    private Button CheckoutButton => new(_btnCheckout);
+    private Button RemoveBackpackButton => new(_btnRemoveBackpack);
 
     public HeaderSection Header => new(_driver);
 
@@ -24,15 +36,14 @@ public class CartPage : BasePage
     {
     }
 
-    public CartPage WaitUntilOpened()
-    {
-        Wait().Until(_ => CheckoutButton.IsDisplayed());
-        return this;
-    }
+    protected override void ExecuteLoad() => _driver.Navigate().GoToUrl($"{BaseUrl}/cart.html");
+
+    protected override bool EvaluateLoadedStatus() =>
+        _driver.Url.Contains("/cart.html") && CheckoutButton.IsDisplayed();
 
     public string GetTitle() => TitleLabel.GetText();
 
-    public int GetItemsCount() => _driver.FindElements(_cartItems).Count;
+    public int GetItemsCount() => _cartItems.Count;
 
     public string GetFirstItemName() => ItemNameLabel.GetText();
 
@@ -49,7 +60,7 @@ public class CartPage : BasePage
     {
         Log.Info("Start checkout");
         CheckoutButton.Click();
-        return new CheckoutInformationPage(_driver);
+        return new CheckoutInformationPage(_driver).Load();
     }
 
     public bool IsEmpty() => GetItemsCount() == 0;

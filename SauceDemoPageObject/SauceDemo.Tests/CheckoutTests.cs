@@ -9,15 +9,15 @@ public class CheckoutTests : BaseTest
     [Test]
     public void CheckoutWithoutFirstNameShowsError()
     {
-        CheckoutInformationPage informationPage = new LoginPage(driver)
+        string errorMessage = new LoginPage(driver)
             .Login()
             .AddBackpackToCart()
             .Header.OpenCart()
-            .ClickCheckout();
+            .ClickCheckout()
+            .ClickContinueExpectingError()
+            .GetErrorMessage();
 
-        informationPage.ClickContinueExpectingError();
-
-        Assert.That(informationPage.GetErrorMessage(), Is.EqualTo("Error: First Name is required"));
+        Assert.That(errorMessage, Is.EqualTo("Error: First Name is required"));
     }
 
     [Test]

@@ -7,6 +7,12 @@
 ```
 SauceDemoPageObject/
 ├── SauceDemo.Core/          библиотека с Page Object классами
+│   ├── Configuration/
+│   │   ├── BrowserType.cs                Chrome или Firefox
+│   │   ├── TestSettings.cs               DTO с настройками запуска
+│   │   └── ConfigReader.cs               чтение appsettings.json
+│   ├── Drivers/
+│   │   └── DriverFactory.cs              создание драйвера по настройкам
 │   ├── Elements/            обёртки над элементами страницы
 │   │   ├── BaseElement.cs                текст и видимость элемента
 │   │   ├── Button.cs                     кнопка
@@ -14,7 +20,7 @@ SauceDemoPageObject/
 │   │   ├── Label.cs                      текстовая надпись
 │   │   └── Link.cs                       ссылка
 │   └── Pages/
-│       ├── BasePage.cs                  общий родитель: драйвер, открытие сайта, ожидания
+│       ├── BasePage.cs                  общий родитель: драйвер, PageFactory, загрузка страницы
 │       ├── LoginPage.cs                 страница логина
 │       ├── ProductsPage.cs              страница товаров
 │       ├── ProductDetailsPage.cs        карточка товара
@@ -25,6 +31,7 @@ SauceDemoPageObject/
 │       ├── CheckoutOverviewPage.cs      оформление, шаг 2 (суммы)
 │       └── CheckoutCompletePage.cs      успешное оформление
 └── SauceDemo.Tests/         тесты NUnit
+    ├── appsettings.json          настройки запуска
     ├── BaseTest.cs
     ├── LoginTests.cs
     ├── CartTests.cs
@@ -41,7 +48,12 @@ SauceDemoPageObject/
 dotnet test
 ```
 
-Браузер — Chrome, запускается в гостевом режиме (`--guest`), окно разворачивается на весь экран, неявное ожидание 10 секунд.
+Настройки запуска лежат в `SauceDemo.Tests/appsettings.json`:
+
+- `Browser` — `Chrome` или `Firefox`
+- `Headless` — запуск без окна браузера
+- `BaseUrl` — адрес приложения
+- `ImplicitWaitSeconds` — неявное ожидание в секундах
 
 ## Чек-лист
 

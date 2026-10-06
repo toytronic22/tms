@@ -1,30 +1,36 @@
 using OpenQA.Selenium;
 using SauceDemo.Core.Elements;
+using SeleniumExtras.PageObjects;
 
 namespace SauceDemo.Core.Pages;
 
-public class SideMenuSection : BasePage
+public class SideMenuSection : BasePage<SideMenuSection>
 {
-    private readonly By _lnkLogout = By.Id("logout_sidebar_link");
-    private readonly By _lnkResetAppState = By.Id("reset_sidebar_link");
+    [FindsBy(How = How.Id, Using = "react-burger-menu-btn")]
+    private IWebElement _btnBurgerMenu = null!;
 
-    private Link LogoutLink => new(_driver.FindElement(_lnkLogout));
-    private Link ResetAppStateLink => new(_driver.FindElement(_lnkResetAppState));
+    [FindsBy(How = How.Id, Using = "logout_sidebar_link")]
+    private IWebElement _lnkLogout = null!;
+
+    [FindsBy(How = How.Id, Using = "reset_sidebar_link")]
+    private IWebElement _lnkResetAppState = null!;
+
+    private Button BurgerMenuButton => new(_btnBurgerMenu);
+    private Link LogoutLink => new(_lnkLogout);
+    private Link ResetAppStateLink => new(_lnkResetAppState);
 
     public SideMenuSection(IWebDriver driver) : base(driver)
     {
     }
 
-    public SideMenuSection WaitUntilOpened()
-    {
-        Wait().Until(_ => LogoutLink.IsDisplayed());
-        return this;
-    }
+    protected override void ExecuteLoad() => BurgerMenuButton.Click();
+
+    protected override bool EvaluateLoadedStatus() => LogoutLink.IsDisplayed();
 
     public LoginPage ClickLogout()
     {
         LogoutLink.Click();
-        return new LoginPage(_driver);
+        return new LoginPage(_driver).Load();
     }
 
     public SideMenuSection ResetAppState()

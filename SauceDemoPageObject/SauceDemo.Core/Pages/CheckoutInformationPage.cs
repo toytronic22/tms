@@ -1,25 +1,40 @@
 using OpenQA.Selenium;
 using SauceDemo.Core.Elements;
+using SeleniumExtras.PageObjects;
 
 namespace SauceDemo.Core.Pages;
 
-public class CheckoutInformationPage : BasePage
+public class CheckoutInformationPage : BasePage<CheckoutInformationPage>
 {
-    private readonly By _inpFirstName = By.Id("first-name");
-    private readonly By _inpLastName = By.Id("last-name");
-    private readonly By _inpPostalCode = By.Id("postal-code");
-    private readonly By _btnContinue = By.Id("continue");
-    private readonly By _msgError = By.CssSelector("h3[data-test='error']");
+    [FindsBy(How = How.Id, Using = "first-name")]
+    private IWebElement _inpFirstName = null!;
 
-    private Input FirstNameInput => new(_driver.FindElement(_inpFirstName));
-    private Input LastNameInput => new(_driver.FindElement(_inpLastName));
-    private Input PostalCodeInput => new(_driver.FindElement(_inpPostalCode));
-    private Button ContinueButton => new(_driver.FindElement(_btnContinue));
-    private Label ErrorMessage => new(_driver.FindElement(_msgError));
+    [FindsBy(How = How.Id, Using = "last-name")]
+    private IWebElement _inpLastName = null!;
+
+    [FindsBy(How = How.Id, Using = "postal-code")]
+    private IWebElement _inpPostalCode = null!;
+
+    [FindsBy(How = How.Id, Using = "continue")]
+    private IWebElement _btnContinue = null!;
+
+    [FindsBy(How = How.CssSelector, Using = "h3[data-test='error']")]
+    private IWebElement _msgError = null!;
+
+    private Input FirstNameInput => new(_inpFirstName);
+    private Input LastNameInput => new(_inpLastName);
+    private Input PostalCodeInput => new(_inpPostalCode);
+    private Button ContinueButton => new(_btnContinue);
+    private Label ErrorMessage => new(_msgError);
 
     public CheckoutInformationPage(IWebDriver driver) : base(driver)
     {
     }
+
+    protected override void ExecuteLoad() => _driver.Navigate().GoToUrl($"{BaseUrl}/checkout-step-one.html");
+
+    protected override bool EvaluateLoadedStatus() =>
+        _driver.Url.Contains("/checkout-step-one.html") && ContinueButton.IsDisplayed();
 
     public CheckoutInformationPage SetFirstName(string firstName)
     {
@@ -42,7 +57,7 @@ public class CheckoutInformationPage : BasePage
     public CheckoutOverviewPage ClickContinue()
     {
         ContinueButton.Click();
-        return new CheckoutOverviewPage(_driver).WaitUntilOpened();
+        return new CheckoutOverviewPage(_driver).Load();
     }
 
     public CheckoutInformationPage ClickContinueExpectingError()
@@ -57,9 +72,5 @@ public class CheckoutInformationPage : BasePage
         return SetFirstName(firstName).SetLastName(lastName).SetPostalCode(postalCode).ClickContinue();
     }
 
-    public string GetErrorMessage()
-    {
-        Wait().Until(_ => ErrorMessage.IsDisplayed());
-        return ErrorMessage.GetText();
-    }
+    public string GetErrorMessage() => ErrorMessage.GetText();
 }
