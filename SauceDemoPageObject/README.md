@@ -7,11 +7,19 @@
 ```
 SauceDemoPageObject/
 ├── SauceDemo.Core/          библиотека с Page Object классами
+│   ├── Elements/            обёртки над элементами страницы
+│   │   ├── BaseElement.cs                текст и видимость элемента
+│   │   ├── Button.cs                     кнопка
+│   │   ├── Input.cs                      поле ввода
+│   │   ├── Label.cs                      текстовая надпись
+│   │   └── Link.cs                       ссылка
 │   └── Pages/
 │       ├── BasePage.cs                  общий родитель: драйвер, открытие сайта, ожидания
 │       ├── LoginPage.cs                 страница логина
 │       ├── ProductsPage.cs              страница товаров
-│       ├── HeaderSection.cs             шапка: бургер-меню, logout, корзина
+│       ├── ProductDetailsPage.cs        карточка товара
+│       ├── HeaderSection.cs             шапка: бургер-меню, корзина
+│       ├── SideMenuSection.cs           боковое меню: Logout, Reset App State
 │       ├── CartPage.cs                  корзина
 │       ├── CheckoutInformationPage.cs   оформление, шаг 1 (данные покупателя)
 │       ├── CheckoutOverviewPage.cs      оформление, шаг 2 (суммы)
@@ -20,7 +28,9 @@ SauceDemoPageObject/
     ├── BaseTest.cs
     ├── LoginTests.cs
     ├── CartTests.cs
-    └── CheckoutTests.cs
+    ├── CheckoutTests.cs
+    ├── ProductDetailsTests.cs
+    └── PurchaseTests.cs          полный флоу покупки товара
 ```
 
 Тестовые данные: `standard_user` / `secret_sauce` (указаны на главной странице приложения).
