@@ -22,6 +22,8 @@ pipeline {
     environment {
         TestSettings__GridUrl = 'http://selenium-hub:4444'
         TestSettings__Headless = 'true'
+        MSBUILDDISABLENODEREUSE = '1'
+        UseSharedCompilation = 'false'
         TestSettings__Browser = "${params.BROWSER}"
         TESTS_RESULTS = 'FinalSurge/FinalSurge.Tests/bin/Debug/net10.0/allure-results'
         BDD_RESULTS = 'FinalSurge/FinalSurge.Bdd/bin/Debug/net10.0/allure-results'
