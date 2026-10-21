@@ -27,7 +27,7 @@ services:
       - selenium-hub
     environment:
       - SE_EVENT_BUS_HOST=selenium-hub
-      - SE_NODE_MAX_SESSIONS=3
+      - SE_NODE_MAX_SESSIONS=2
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
 
   firefox:
@@ -37,7 +37,7 @@ services:
       - selenium-hub
     environment:
       - SE_EVENT_BUS_HOST=selenium-hub
-      - SE_NODE_MAX_SESSIONS=3
+      - SE_NODE_MAX_SESSIONS=2
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
 
 volumes:

@@ -8,6 +8,8 @@ namespace FinalSurge.Core.Drivers;
 
 public static class DriverFactory
 {
+    private static readonly TimeSpan GridCommandTimeout = TimeSpan.FromMinutes(3);
+
     public static IWebDriver CreateDriver(TestSettings settings)
     {
         IWebDriver driver = settings.Browser switch
@@ -34,7 +36,7 @@ public static class DriverFactory
 
         return string.IsNullOrEmpty(settings.GridUrl)
             ? new ChromeDriver(options)
-            : new RemoteWebDriver(new Uri(settings.GridUrl), options);
+            : new RemoteWebDriver(new Uri(settings.GridUrl), options.ToCapabilities(), GridCommandTimeout);
     }
 
     private static IWebDriver CreateFirefoxDriver(TestSettings settings)
@@ -50,6 +52,6 @@ public static class DriverFactory
 
         return string.IsNullOrEmpty(settings.GridUrl)
             ? new FirefoxDriver(options)
-            : new RemoteWebDriver(new Uri(settings.GridUrl), options);
+            : new RemoteWebDriver(new Uri(settings.GridUrl), options.ToCapabilities(), GridCommandTimeout);
     }
 }
