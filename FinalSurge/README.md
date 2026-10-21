@@ -115,6 +115,9 @@ cd jenkins
 docker compose up -d --build
 ```
 
+Docker Desktop нужно не меньше 8 ГБ памяти (Settings → Resources → Memory): с 4 ГБ кросс-браузерная сборка падает
+по памяти.
+
 Поднимаются Jenkins (http://localhost:8082), Selenium Grid (http://localhost:4445) и две ноды: Chromium и Firefox.
 Задачи `FinalSurge` и `FinalSurge-CrossBrowser` и инструмент `allure Jenkins` создаются сами. Код Jenkins берёт
 из этого репозитория (папка смонтирована в контейнер), ветка `diploma`.
