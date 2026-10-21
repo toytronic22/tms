@@ -1,5 +1,5 @@
 def testFilter(String category) {
-    return params.SUITE == 'All' ? "Category=${category}" : "Category=${category}&Category=${params.SUITE}"
+    return params.SUITE == 'Smoke' ? "Category=${category}&Category=Smoke" : "Category=${category}"
 }
 
 def runTests(String project, String category) {
@@ -11,13 +11,25 @@ def runTests(String project, String category) {
     }
 }
 
+def notifyTelegram(String browser) {
+    def stats = sh(returnStdout: true, script: '''
+        jq -r '.statistic | "Passed \\(.passed) of \\(.total), failed \\(.failed), broken \\(.broken)"' allure-report/widgets/summary.json || echo "No test results"
+    ''').trim()
+    def icon = currentBuild.currentResult == 'SUCCESS' ? '✅' : '❌'
+    def text = "${icon} ${env.JOB_NAME} #${env.BUILD_NUMBER}: ${currentBuild.currentResult}\n" +
+            "Suite: ${params.SUITE}, browser: ${browser}\n" +
+            "${stats}\n" +
+            "Allure: ${env.BUILD_URL}allure/"
+    withEnv(["TELEGRAM_TEXT=${text}"]) {
+        withCredentials([string(credentialsId: 'telegram-bot-token', variable: 'TELEGRAM_TOKEN'),
+                         string(credentialsId: 'telegram-chat-id', variable: 'TELEGRAM_CHAT_ID')]) {
+            sh 'curl -sS --fail-with-body -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage" -d chat_id="$TELEGRAM_CHAT_ID" --data-urlencode text="$TELEGRAM_TEXT"'
+        }
+    }
+}
+
 pipeline {
     agent any
-
-    parameters {
-        choice(name: 'BROWSER', choices: ['Chrome', 'Firefox'], description: 'Browser for UI and BDD tests')
-        choice(name: 'SUITE', choices: ['All', 'Smoke', 'Regression'], description: 'Test suite')
-    }
 
     environment {
         TestSettings__GridUrl = 'http://selenium-hub:4444'
@@ -73,6 +85,7 @@ pipeline {
     post {
         always {
             allure commandline: 'allure Jenkins', results: [[path: "${TESTS_RESULTS}"], [path: "${BDD_RESULTS}"]]
+            notifyTelegram(params.BROWSER)
         }
     }
 }

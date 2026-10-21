@@ -3,7 +3,7 @@ FROM jenkins/jenkins:lts-jdk21
 USER root
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl ca-certificates libicu-dev \
+    && apt-get install -y --no-install-recommends curl ca-certificates libicu-dev jq \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -sSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh \
