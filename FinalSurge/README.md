@@ -9,7 +9,7 @@
 - RestSharp — API-тесты и создание тестовых данных через API
 - Reqnroll — BDD-сценарии (преемник SpecFlow, сам SpecFlow больше не развивается)
 - Allure — отчёт, log4net — логи
-- Jenkins + Selenium Grid в Docker — CI
+- Jenkins + Selenium Grid в Docker — CI, результат сборки — в Telegram
 
 ## Структура
 
@@ -106,7 +106,8 @@ allure serve FinalSurge.Tests/bin/Debug/net10.0/allure-results
   три потока). В Jenkins API, UI и BDD запускаются тремя параллельными стадиями (`Jenkinsfile`).
 - **Кросс-браузерный** — `Jenkinsfile.crossbrowser`: matrix по браузеру, UI- и BDD-тесты одновременно в Chrome
   и Firefox через Selenium Grid. В отчёте Allure у каждого теста есть параметр `Browser`.
-- **Smoke / Regression** — параметр `SUITE` в обеих задачах Jenkins.
+- **Smoke и регресс** — отдельные задачи Jenkins. Smoke запускает только тесты с категорией `Smoke` (главные
+  проверки, около полутора минут), регресс — все тесты.
 
 ## CI: Jenkins
 
@@ -119,10 +120,23 @@ Docker Desktop нужно не меньше 8 ГБ памяти (Settings → Re
 по памяти.
 
 Поднимаются Jenkins (http://localhost:8082), Selenium Grid (http://localhost:4445) и две ноды: Chromium и Firefox.
-Задачи `FinalSurge` и `FinalSurge-CrossBrowser` и инструмент `allure Jenkins` создаются сами. Код Jenkins берёт
-из этого репозитория (папка смонтирована в контейнер), ветка `diploma`.
+Задачи и инструмент `allure Jenkins` создаются сами. Код Jenkins берёт из этого репозитория (папка смонтирована
+в контейнер), ветка `diploma`.
 
-Перед первым запуском нужно добавить учётные данные Final Surge: Manage Jenkins → Credentials → System →
-Global credentials → Add Credentials, тип Username with password, ID `final-surge`.
+| Задача | Pipeline | Что запускает |
+|---|---|---|
+| `FinalSurge-Smoke` | `Jenkinsfile` | smoke-тесты API, UI и BDD параллельно, браузер — параметр `BROWSER` |
+| `FinalSurge-Regression` | `Jenkinsfile` | все тесты API, UI и BDD параллельно, браузер — параметр `BROWSER` |
+| `FinalSurge-CrossBrowser` | `Jenkinsfile.crossbrowser` | UI и BDD сразу в Chrome и Firefox, набор — параметр `SUITE` |
 
-После прогона отчёт открывается по ссылке Allure Report в сборке.
+Перед первым запуском нужно добавить учётные данные: Manage Jenkins → Credentials → System → Global credentials →
+Add Credentials.
+
+| ID | Тип | Что это |
+|---|---|---|
+| `final-surge` | Username with password | почта и пароль аккаунта Final Surge |
+| `telegram-bot-token` | Secret text | токен бота от @BotFather |
+| `telegram-chat-id` | Secret text | id чата, куда бот пишет результат |
+
+После прогона отчёт открывается по ссылке Allure Report в сборке. Бот присылает в Telegram результат сборки,
+сколько тестов прошло и ссылку на отчёт Allure.
