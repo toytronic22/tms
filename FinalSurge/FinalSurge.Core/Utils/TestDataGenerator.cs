@@ -18,15 +18,4 @@ public static class TestDataGenerator
         DistanceUnit = "km",
         Duration = TimeSpan.FromMinutes(30)
     };
-
-    public static Shoe RunningShoe() => new()
-    {
-        Name = UniqueName("Shoe"),
-        Brand = "ASICS",
-        Model = "Gel-Nimbus",
-        Cost = 120,
-        Size = "10",
-        AlertDistance = 500,
-        AlertDistanceUnit = "km"
-    };
 }

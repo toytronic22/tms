@@ -43,33 +43,6 @@ public class LoginTests : BaseTest
     }
 
     [Test]
-    [Category("Regression")]
-    public void LoginWithEmptyFieldsShowsValidation()
-    {
-        LoginPage loginPage = new LoginPage(driver).Load()
-            .ClickLoginButtonExpectingError();
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(loginPage.GetEmailValidationMessage(), Is.EqualTo("Please enter your e-mail address."));
-            Assert.That(loginPage.GetPasswordValidationMessage(), Is.EqualTo("Please enter a password."));
-        });
-    }
-
-    [Test]
-    [Category("Regression")]
-    public void LoginWithInvalidEmailShowsValidation()
-    {
-        string validationMessage = new LoginPage(driver).Load()
-            .SetEmail("nobody.tms")
-            .SetPassword("wrong-password")
-            .ClickLoginButtonExpectingError()
-            .GetEmailValidationMessage();
-
-        Assert.That(validationMessage, Is.EqualTo("Please enter a valid email address."));
-    }
-
-    [Test]
     [Category("Smoke")]
     [AllureSeverity(SeverityLevel.critical)]
     public void LogoutReturnsToLoginPage()

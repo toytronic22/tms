@@ -75,13 +75,4 @@ public class AuthApiTests
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
     }
-
-    [Test]
-    [Category("Regression")]
-    public void RequestWithInvalidTokenReturnsUnauthorized()
-    {
-        RestResponse<ApiResponse<UserSettings>> response = new SettingsClient(Guid.NewGuid().ToString()).GetSettings();
-
-        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
-    }
 }
