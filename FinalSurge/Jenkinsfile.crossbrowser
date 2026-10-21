@@ -1,0 +1,81 @@
+def testFilter(String category) {
+    return params.SUITE == 'All' ? "Category=${category}" : "Category=${category}&Category=${params.SUITE}"
+}
+
+def runTests(String project, String category) {
+    withCredentials([usernamePassword(credentialsId: 'final-surge',
+            usernameVariable: 'TestSettings__Email', passwordVariable: 'TestSettings__Password')]) {
+        dir('FinalSurge') {
+            sh "dotnet test ${project} --no-build --filter \"${testFilter(category)}\""
+        }
+    }
+}
+
+pipeline {
+    agent any
+
+    parameters {
+        choice(name: 'SUITE', choices: ['All', 'Smoke', 'Regression'], description: 'Test suite')
+    }
+
+    environment {
+        TestSettings__GridUrl = 'http://selenium-hub:4444'
+        TestSettings__Headless = 'true'
+        TESTS_RESULTS = 'FinalSurge/FinalSurge.Tests/bin/Debug/net10.0/allure-results'
+        BDD_RESULTS = 'FinalSurge/FinalSurge.Bdd/bin/Debug/net10.0/allure-results'
+    }
+
+    stages {
+        stage('Restore') {
+            steps {
+                dir('FinalSurge') {
+                    sh 'dotnet restore'
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh "rm -rf ${TESTS_RESULTS} ${BDD_RESULTS}"
+                dir('FinalSurge') {
+                    sh 'dotnet build --no-restore'
+                }
+            }
+        }
+
+        stage('Cross-browser') {
+            matrix {
+                axes {
+                    axis {
+                        name 'BROWSER'
+                        values 'Chrome', 'Firefox'
+                    }
+                }
+
+                environment {
+                    TestSettings__Browser = "${BROWSER}"
+                }
+
+                stages {
+                    stage('UI') {
+                        steps {
+                            runTests('FinalSurge.Tests', 'UI')
+                        }
+                    }
+
+                    stage('BDD') {
+                        steps {
+                            runTests('FinalSurge.Bdd', 'UI')
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            allure commandline: 'allure Jenkins', results: [[path: "${TESTS_RESULTS}"], [path: "${BDD_RESULTS}"]]
+        }
+    }
+}

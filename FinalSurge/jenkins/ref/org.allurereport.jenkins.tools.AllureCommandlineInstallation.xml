@@ -1,0 +1,17 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<org.allurereport.jenkins.tools.AllureCommandlineInstallation_-DescriptorImpl>
+  <installations class="org.allurereport.jenkins.tools.AllureCommandlineInstallation-array">
+    <org.allurereport.jenkins.tools.AllureCommandlineInstallation>
+      <name>allure Jenkins</name>
+      <properties>
+        <hudson.tools.InstallSourceProperty>
+          <installers>
+            <org.allurereport.jenkins.tools.AllureManagedInstaller>
+              <versionPolicy>recommended-2</versionPolicy>
+            </org.allurereport.jenkins.tools.AllureManagedInstaller>
+          </installers>
+        </hudson.tools.InstallSourceProperty>
+      </properties>
+    </org.allurereport.jenkins.tools.AllureCommandlineInstallation>
+  </installations>
+</org.allurereport.jenkins.tools.AllureCommandlineInstallation_-DescriptorImpl>

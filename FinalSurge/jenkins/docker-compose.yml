@@ -1,0 +1,44 @@
+name: finalsurge
+
+services:
+  jenkins:
+    build: .
+    container_name: finalsurge-jenkins
+    ports:
+      - "127.0.0.1:8082:8080"
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - ../..:/repo:ro
+    depends_on:
+      - selenium-hub
+
+  selenium-hub:
+    image: selenium/hub:4.49.0
+    container_name: selenium-hub
+    ports:
+      - "127.0.0.1:4445:4444"
+
+  chrome:
+    image: selenium/node-chromium:4.49.0
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_NODE_MAX_SESSIONS=3
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+
+  firefox:
+    image: selenium/node-firefox:4.49.0
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_NODE_MAX_SESSIONS=3
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+
+volumes:
+  jenkins_home:
