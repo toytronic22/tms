@@ -1,0 +1,22 @@
+{
+  "allure": {
+    "directory": "allure-results",
+    "links": [],
+    "gherkinPatterns": {
+      "stepArguments": {
+        "createFromDataTables": true,
+        "nameColumn": "Field",
+        "valueColumn": "Value"
+      },
+      "grouping": {
+        "behaviors": {
+          "epic": "allure\\.epic:(.+)",
+          "story": "allure\\.story:(.+)"
+        }
+      },
+      "metadata": {
+        "severity": "(normal|blocker|critical|minor|trivial)"
+      }
+    }
+  }
+}
