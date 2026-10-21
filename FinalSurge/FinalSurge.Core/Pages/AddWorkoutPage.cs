@@ -110,7 +110,7 @@ public class AddWorkoutPage : BasePage<AddWorkoutPage>
     public WorkoutDetailsPage Save()
     {
         Log.Info("Save workout");
-        SaveButton.Click();
+        WaitForReload(_btnSave, SaveButton.Click);
         return new WorkoutDetailsPage(_driver).Load();
     }
 

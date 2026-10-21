@@ -11,7 +11,7 @@ public class ShoesPage : BasePage<ShoesPage>
     [FindsBy(How = How.Id, Using = "ShoeName")]
     private IWebElement _inpName = null!;
 
-    [FindsBy(How = How.Id, Using = "ShoeBrand")]
+    [FindsBy(How = How.Id, Using = "s2id_ShoeBrand")]
     private IWebElement _ddlBrand = null!;
 
     [FindsBy(How = How.Id, Using = "ShoeModel")]
@@ -36,7 +36,7 @@ public class ShoesPage : BasePage<ShoesPage>
     private IWebElement _btnDelete = null!;
 
     private Input NameInput => new(_inpName);
-    private DropDown BrandDropDown => new(_ddlBrand);
+    private Select2DropDown BrandDropDown => new(_driver, _ddlBrand);
     private Input ModelInput => new(_inpModel);
     private Input CostInput => new(_inpCost);
     private DropDown SizeDropDown => new(_ddlSize);
@@ -76,8 +76,7 @@ public class ShoesPage : BasePage<ShoesPage>
     {
         Log.Info($"Add shoe {shoe.Name}");
         FillShoe(shoe);
-        SaveButton.Click();
-        WaitForReload(_btnSave);
+        WaitForReload(_btnSave, SaveButton.Click);
         return new ShoesPage(_driver).Load();
     }
 

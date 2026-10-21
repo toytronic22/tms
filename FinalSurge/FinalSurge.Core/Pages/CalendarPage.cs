@@ -22,10 +22,10 @@ public class CalendarPage : BasePage<CalendarPage>
         _driver.Url.Contains($"y={_date.Year}&m={_date.Month}&d={_date.Day}");
 
     private static By WorkoutTitle(string name) =>
-        By.XPath($"//div[contains(@class,'fc-event-activity-title') and normalize-space()='{name}']");
+        By.XPath($"//div[contains(@class,'calendarworkout')]//div[contains(@class,'fc-event') and @data-title='{name}']");
 
     private static By WorkoutCard(string name) =>
-        By.XPath($"//div[contains(@class,'calendarworkout')][.//div[contains(@class,'fc-event-activity-title') and normalize-space()='{name}']]");
+        By.XPath($"//div[contains(@class,'calendarworkout')][.//div[contains(@class,'fc-event') and @data-title='{name}']]");
 
     public bool IsWorkoutDisplayed(string name)
     {

@@ -60,7 +60,7 @@ public class WorkoutClient : BaseApiClient
             ActivityTypeName = workout.ActivityType,
             Amount = workout.Distance,
             AmountType = workout.DistanceUnit,
-            Duration = (int)workout.Duration.TotalSeconds
+            Duration = workout.Duration.TotalSeconds
         }
     };
 

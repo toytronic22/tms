@@ -15,6 +15,8 @@ public class ConfirmationModal : BasePage<ConfirmationModal>
     [FindsBy(How = How.CssSelector, Using = ".bootbox.in a[data-handler='0']")]
     private IWebElement _btnCancel = null!;
 
+    private int _lastButtonTop = int.MinValue;
+
     private Label MessageLabel => new(_lblMessage);
     private Button OkButton => new(_btnOk);
     private Button CancelButton => new(_btnCancel);
@@ -27,7 +29,18 @@ public class ConfirmationModal : BasePage<ConfirmationModal>
     {
     }
 
-    protected override bool EvaluateLoadedStatus() => OkButton.IsDisplayed();
+    protected override bool EvaluateLoadedStatus()
+    {
+        if (!OkButton.IsDisplayed())
+        {
+            return false;
+        }
+
+        int buttonTop = _btnOk.Location.Y;
+        bool isAnimationFinished = buttonTop == _lastButtonTop;
+        _lastButtonTop = buttonTop;
+        return isAnimationFinished;
+    }
 
     public string GetMessage() => MessageLabel.GetText();
 

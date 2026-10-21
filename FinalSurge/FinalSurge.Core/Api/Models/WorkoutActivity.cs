@@ -17,5 +17,5 @@ public class WorkoutActivity
     public string? AmountType { get; set; }
 
     [JsonPropertyName("duration")]
-    public int? Duration { get; set; }
+    public double? Duration { get; set; }
 }

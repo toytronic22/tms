@@ -59,6 +59,7 @@ public class LoginPage : BasePage<LoginPage>
     public DashboardPage ClickLoginButton()
     {
         LoginButton.Click();
+        new HeaderSection(_driver).Load();
         return new DashboardPage(_driver).Load();
     }
 

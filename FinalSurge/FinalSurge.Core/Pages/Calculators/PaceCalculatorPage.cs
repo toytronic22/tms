@@ -69,8 +69,7 @@ public class PaceCalculatorPage : BasePage<PaceCalculatorPage>
     public PaceCalculatorPage Calculate()
     {
         Log.Info("Calculate paces");
-        CalculateButton.Click();
-        WaitForReload(_btnCalculate);
+        WaitForReload(_btnCalculate, CalculateButton.Click);
         return new PaceCalculatorPage(_driver).Load();
     }
 

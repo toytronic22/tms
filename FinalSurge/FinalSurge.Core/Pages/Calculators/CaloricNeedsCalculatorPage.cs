@@ -89,8 +89,7 @@ public class CaloricNeedsCalculatorPage : BasePage<CaloricNeedsCalculatorPage>
     public CaloricNeedsCalculatorPage Calculate()
     {
         Log.Info("Calculate caloric needs");
-        CalculateButton.Click();
-        WaitForReload(_btnCalculate);
+        WaitForReload(_btnCalculate, CalculateButton.Click);
         return new CaloricNeedsCalculatorPage(_driver).Load();
     }
 
@@ -103,8 +102,7 @@ public class CaloricNeedsCalculatorPage : BasePage<CaloricNeedsCalculatorPage>
     public PaceCalculatorPage OpenPaceCalculator()
     {
         Log.Info("Open pace calculator");
-        PaceCalculatorLink.Click();
-        WaitForReload(_btnCalculate);
+        WaitForReload(_btnCalculate, PaceCalculatorLink.Click);
         return new PaceCalculatorPage(_driver).Load();
     }
 }

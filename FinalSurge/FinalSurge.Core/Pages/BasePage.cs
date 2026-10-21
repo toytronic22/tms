@@ -41,8 +41,10 @@ public abstract class BasePage<T> : SlowLoadableComponent<T> where T : BasePage<
         }
     }
 
-    protected void WaitForReload(IWebElement oldElement)
+    protected void WaitForReload(IWebElement element, Action action)
     {
+        IWebElement oldElement = ((IWrapsElement)element).WrappedElement;
+        action();
         Waiter.Until(driver =>
         {
             try
