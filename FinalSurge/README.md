@@ -121,7 +121,7 @@ Docker Desktop нужно не меньше 8 ГБ памяти (Settings → Re
 
 Поднимаются Jenkins (http://localhost:8082), Selenium Grid (http://localhost:4445) и две ноды: Chromium и Firefox.
 Задачи и инструмент `allure Jenkins` создаются сами. Код Jenkins берёт из этого репозитория (папка смонтирована
-в контейнер), ветка `diploma`.
+в контейнер), ветка `main`.
 
 | Задача | Pipeline | Что запускает |
 |---|---|---|
