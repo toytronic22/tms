@@ -20,6 +20,7 @@ public class ProductsPage : BasePage
 
     public ProductsPage AddBackpackToCart()
     {
+        Log.Info("Add backpack to cart");
         _driver.FindElement(_btnAddBackpack).Click();
         return this;
     }

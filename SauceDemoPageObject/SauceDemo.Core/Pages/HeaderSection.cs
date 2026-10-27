@@ -26,10 +26,15 @@ public class HeaderSection : BasePage
         return new LoginPage(_driver);
     }
 
-    public LoginPage Logout() => OpenSideMenu().ClickLogoutButton();
+    public LoginPage Logout()
+    {
+        Log.Info("Logout");
+        return OpenSideMenu().ClickLogoutButton();
+    }
 
     public CartPage OpenCart()
     {
+        Log.Info("Open cart");
         _driver.FindElement(_lnkCart).Click();
         return new CartPage(_driver);
     }

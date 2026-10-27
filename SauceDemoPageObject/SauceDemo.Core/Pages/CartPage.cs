@@ -27,12 +27,14 @@ public class CartPage : BasePage
 
     public CartPage RemoveBackpack()
     {
+        Log.Info("Remove backpack from cart");
         _driver.FindElement(_btnRemoveBackpack).Click();
         return this;
     }
 
     public CheckoutInformationPage ClickCheckout()
     {
+        Log.Info("Start checkout");
         _driver.FindElement(_btnCheckout).Click();
         return new CheckoutInformationPage(_driver);
     }

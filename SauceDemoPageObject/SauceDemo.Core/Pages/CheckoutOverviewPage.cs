@@ -18,6 +18,7 @@ public class CheckoutOverviewPage : BasePage
 
     public CheckoutCompletePage ClickFinish()
     {
+        Log.Info("Finish order");
         _driver.FindElement(_btnFinish).Click();
         return new CheckoutCompletePage(_driver);
     }
