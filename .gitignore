@@ -10,3 +10,6 @@ obj/
 # Rider / JetBrains
 .idea/
 *.user
+
+# Reqnroll
+*.feature.cs
